@@ -9,6 +9,8 @@
 import java.io.*;
 import java.util.*;
 import java.net.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 // Server class
 public class Server{
@@ -81,9 +83,8 @@ public class Server{
 // ClientHandler class
 class ClientHandler implements Runnable{
 	
-	/*DateFormat fordate = new SimpleDateFormat("dd/MM/yyyy");
+	DateFormat fordate = new SimpleDateFormat("dd/MM/yyyy");
 	DateFormat fortime = new SimpleDateFormat("hh:mm:ss");
-	*/
 	
 	// Vector de clientes activos. Se utiliza estructura vector porque es sincronizada y 
 	//solo un hilo puede acceder cada vez
@@ -120,25 +121,21 @@ class ClientHandler implements Runnable{
 	@Override
 	public void run(){
 		
-		String mensaje;
+		StringBuilder mensaje = new StringBuilder();
 		//Mientras el cliente siga conectado se sigue esperando mensajes
 		while (s.isConnected()){
 			
 			try {
-				//Se realiza aqui para evitar que la app este parada esperando
-				mensaje = bReader.readLine();
-				//Se envia el mensaje al resto de clientes
-				this.broadcastMessage(mensaje);
 				
-				/*
-				// creating Date object
 				Date date = new Date();
+				mensaje.append(fordate.format(date) + "\t");
+				mensaje.append(fortime.format(date)+"  ||  ");
 				
+				//Se realiza aqui para evitar que la app este parada esperando
+				mensaje.append(bReader.readLine());
+				//Se envia el mensaje al resto de clientes
+				this.broadcastMessage(mensaje.toString());
 				
-				respuesta.append(fordate.format(date)+"\n");
-				respuesta.append(fortime.format(date)+"\n");
-				*/
-						
 			} catch (IOException e) {
 				this.closeConnections();
 				//para salir del bucle
